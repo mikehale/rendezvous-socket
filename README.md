@@ -22,7 +22,21 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+1. On a server with a known IP address run the server.
+
+```bash
+rendezvous-server
+```
+
+2. On 2 peer machines that wish to establish a direct connection run
+the client.
+
+```bash
+RENDEZVOUS_SERVER=n.n.n.n:5000 rendezvous-client
+```
+
+You will know it worked when you see the hostname of each peer in the
+output of it's peer.
 
 ## Contributing
 

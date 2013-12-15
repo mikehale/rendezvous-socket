@@ -1,4 +1,6 @@
-require './custom_socket'
+#!/usr/bin/env ruby
+
+require 'socket'
 require 'thread'
 semaphore = Mutex.new
 
