@@ -46,6 +46,7 @@ output of it's peer.
 
 ## TODO
 
+* Speed. Can a connection be established in < 4 seconds?
 * Server managed sessions
 * SSL
 * Clean interface (as similar to socket interface as possible)
