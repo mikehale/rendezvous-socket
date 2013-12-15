@@ -51,6 +51,7 @@ output of it's peer.
 * SSL
 * Clean interface (as similar to socket interface as possible)
 * Fallback to relay mode
+* Link local connection attempt
 
 ## Inspiration
 
