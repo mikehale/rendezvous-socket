@@ -1,5 +1,6 @@
 require "rendezvous/socket/version"
 require "rendezvous/socket/custom_socket"
+require "rendezvous/socket/accept_or_connect"
 require "timeout"
 require "excon"
 
@@ -15,7 +16,6 @@ module Rendezvous
 
       def initialize(rendezvous_server)
         @rendezvous_server = rendezvous_server
-        super()
       end
 
       def log(args={})
@@ -49,67 +49,17 @@ module Rendezvous
       # lport=0 causes OS to select a random high port
       def get_peer_endpoint(lport=0)
         log(step: :get_peer_endpoint) {
-          response = Excon.get(rendezvous_server, reuseaddr: true)
+          response = Excon.get("http://" + rendezvous_server, reuseaddr: true)
           rhost, rport = response.body.split(":")
-          [response.local_port, rhost, rport.to_i]
+          [response.local_port, response.local_address, rport.to_i, rhost]
         }
       end
 
-      def peer_socket(lport, rhost, rport)
-        log(step: :connect, lport: lport, rhost: rhost, rport: rport) {
-          punch_nat_nonblock(lport, rhost, rport)
-
-          peer = CustomSocket.new
-          peer.bind(lport)
-          peer if peer.connect(rhost, rport)
-
-          # acc = CustomSocket.new
-          # acc.bind(lport)
-          # acc.listen(5)
-          # acc_conn,_ = acc.accept
-          # acc_conn
+      def peer_socket(lport, lhost, rport, rhost)
+        log(step: :connect, lport: lport, rport: rport, rhost: rhost) {
+          #punch_nat_nonblock(lport, rhost, rport)
+          AcceptOrConnect.new(lport, lhost, rport, rhost).socket
         }
-      end
-
-      def peer_socket2(lport, rhost, rport)
-        start = Time.now
-
-        conn = CustomSocket.new
-        conn.bind(lport)
-
-        acc = CustomSocket.new
-        acc.bind(lport)
-        acc.listen(5)
-        acc_conn = nil
-
-        begin
-          acc_conn,_ = acc.accept_nonblock
-        rescue IO::WaitReadable, Errno::EINTR
-          begin
-            conn.connect_nonblock(rhost, rport)
-          rescue IO::WaitWritable
-          end
-
-          p [(Time.now - start).to_f, :before_select]
-          read_ready, write_ready, _ = IO.select([acc], [conn])
-          p [(Time.now - start).to_f, :after_select]
-
-          if read_ready.size > 0
-            p [(Time.now - start).to_f, :using_acc]
-            acc_conn,_ = acc.accept_nonblock
-          end
-
-          if write_ready.size > 0
-            p [(Time.now - start).to_f, :using_conn]
-            begin
-              conn.connect_nonblock(rhost, rport)
-            rescue Errno::EISCONN # already connected
-            end
-          end
-
-        end
-
-        acc_conn || conn
       end
 
       def open

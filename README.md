@@ -25,12 +25,12 @@ Or install it yourself as:
 1. On a server with a known IP address run the server.
 
   ```bash
-  rendezvous-server
+  bin/rendezvous-server
   ```
 2. On 2 peer machines that wish to establish a direct connection with each other run the client.
 
   ```bash
-  RENDEZVOUS_SERVER=n.n.n.n:5000 rendezvous-client
+  RENDEZVOUS_SERVER=n.n.n.n:5000 bin/rendezvous-client
   ```
 
 You will know it worked when you see the hostname of each peer in the
