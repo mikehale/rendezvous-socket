@@ -29,7 +29,19 @@ module Rendezvous
         super(addr_remote)
       end
 
+      def connect_nonblock(ip, port)
+        $stderr.puts "attempting to connect_nonblock to #{ip}:#{port}" if $DEBUG
+        addr_remote = ::Socket.pack_sockaddr_in(port, ip)
+        super(addr_remote)
+      end
+
       def accept
+        $stderr.puts "attempting to accept" if $DEBUG
+        super[0]
+      end
+
+      def accept_nonblock
+        $stderr.puts "attempting to accept_nonblock" if $DEBUG
         super[0]
       end
 
