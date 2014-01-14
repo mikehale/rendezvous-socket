@@ -25,7 +25,11 @@ Or install it yourself as:
 1. On a server with a known IP address run the server.
 
   ```bash
-  bin/rendezvous-server
+  git clone https://github.com/mikehale/rendezvous-server.git
+  cd rendezvous-server
+  gem install foreman
+  bundle install
+  foreman start
   ```
 2. On 2 peer machines that wish to establish a direct connection with each other run the client.
 
@@ -46,7 +50,6 @@ output of it's peer.
 
 ## TODO
 
-* Speed. Can a connection be established in < 4 seconds?
 * Server managed sessions
 * SSL
 * Clean interface (as similar to socket interface as possible)
