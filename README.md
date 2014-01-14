@@ -1,6 +1,6 @@
 # Rendezvous::Socket
 
-Using the help of a well known rendezvous endpoint establish a peer to
+Using the help of a known publically routable [rendezvous-server](https://github.com/mikehale/rendezvous-server) endpoint establish a peer to
 peer connection between clients which may be behind NAT firewalls. In
 the event that NAT traversal techniques are not successful fallback to
 relaying the connection through the rendezvous server. All connections
