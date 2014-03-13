@@ -22,19 +22,18 @@ Or install it yourself as:
 
 ## Usage
 
-1. On a server with a known IP address run the server.
+1. Deploy the server
 
   ```bash
   git clone https://github.com/mikehale/rendezvous-server.git
-  cd rendezvous-server
-  gem install foreman
-  bundle install
-  foreman start
+  heroku create
+  git push heroku master
+  heroku labs:enable websockets
   ```
 2. On 2 peer machines that wish to establish a direct connection with each other run the client.
 
   ```bash
-  RENDEZVOUS_SERVER=n.n.n.n:5000 bin/rendezvous-client
+  RENDEZVOUS_URL=https://rendezvous-server.herokuapp.com bundle exec bin/rendezvous-client
   ```
 
 You will know it worked when you see the hostname of each peer in the
