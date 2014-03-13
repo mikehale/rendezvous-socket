@@ -6,7 +6,7 @@ require 'rendezvous/socket'
 
 $DEBUG = true if ENV['DEBUG']
 
-s, addrinfo, type = Rendezvous::Socket.new(ENV['RENDEZVOUS_SERVER']).open
+s, addrinfo, type = Rendezvous::Socket.new(ENV['RENDEZVOUS_URL']).open
 s.puts Socket.gethostname
 puts s.gets
 s.close

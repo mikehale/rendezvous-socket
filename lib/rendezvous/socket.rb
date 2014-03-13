@@ -4,18 +4,20 @@ require "rendezvous/socket/accept_or_connect"
 require "timeout"
 require "excon"
 
+Excon.defaults[:ssl_verify_peer] = false
+
 module Rendezvous
   module Socket
 
-    def self.new(server)
-      RendezvousSocket.new(server)
+    def self.new(url)
+      RendezvousSocket.new(url)
     end
 
     class RendezvousSocket
-      attr_reader :rendezvous_server
+      attr_reader :rendezvous_url
 
-      def initialize(rendezvous_server)
-        @rendezvous_server = rendezvous_server
+      def initialize(rendezvous_url)
+        @rendezvous_url = rendezvous_url
       end
 
       def log(args={})
@@ -49,7 +51,7 @@ module Rendezvous
       # lport=0 causes OS to select a random high port
       def get_peer_endpoint(lport=0)
         log(step: :get_peer_endpoint) {
-          response = Excon.get("http://" + rendezvous_server, reuseaddr: true)
+          response = Excon.get(rendezvous_url, reuseaddr: true)
           rhost, rport = response.body.split(":")
           [response.local_port, response.local_address, rport.to_i, rhost]
         }
