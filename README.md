@@ -54,8 +54,7 @@ output of it's peer.
 * Clean interface (as similar to socket interface as possible)
 * Fallback to relay mode
 * Link local connection attempt
-* Figure out why linux does not even attempt to send packets somtimes.
-  Connect vs Accept first?
+* Figure out why linux does not even attempt to send packets somtimes. Connect vs Accept first?
 
 ## Inspiration
 
