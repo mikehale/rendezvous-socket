@@ -34,6 +34,11 @@ module Rendezvous
 
     def wait_for_accept_or_connect
       a_thread = Thread.new {
+        # prefer connect over accept
+        if RUBY_PLATFORM =~ /linux/
+          sleep 2
+        end
+
         s = new_socket
         s.listen(5)
         client_socket, addrinfo = s.accept
