@@ -22,18 +22,11 @@ Or install it yourself as:
 
 ## Usage
 
-1. Deploy the server
-
-  ```bash
-  git clone https://github.com/mikehale/rendezvous-server.git
-  heroku create
-  git push heroku master
-  heroku labs:enable websockets
-  ```
+1. [Deploy the server](https://github.com/mikehale/rendezvous-server#heroku-deploy)
 2. On 2 peer machines that wish to establish a direct connection with each other run the client.
 
   ```bash
-  RENDEZVOUS_URL=https://rendezvous-server.herokuapp.com bundle exec bin/rendezvous-client
+  RENDEZVOUS_URL=https://rendezvous-server.herokuapp.com rendezvous-client
   ```
 
 You will know it worked when you see the hostname of each peer in the
