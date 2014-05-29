@@ -54,3 +54,4 @@ output of it's peer.
 * http://www.brynosaurus.com/pub/net/p2pnat/
 * https://github.com/dceballos/tcpnatr
 * http://stackoverflow.com/a/14388707
+* http://nutss.gforge.cis.cornell.edu/pub/imc05-tcpnat.pdf
