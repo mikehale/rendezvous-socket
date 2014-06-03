@@ -26,7 +26,6 @@ module Rendezvous
         elapsed = Time.now - start
         puts args.merge(at: :finish, elapsed: elapsed)
         result
-(abcd[])
       end
 
       # lport=0 causes OS to select a random high port
