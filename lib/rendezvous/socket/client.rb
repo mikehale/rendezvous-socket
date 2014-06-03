@@ -12,7 +12,6 @@ module Rendezvous
         socket.connect(ip, port)
         self.new(ip, port, socket, :connect)
       }
-      true
     rescue Timeout::Error, Errno::ECONNREFUSED
       false
     end
@@ -22,17 +21,14 @@ module Rendezvous
       server.bind(local_port)
       server.listen(5)
       send_syn!(ip, port, local_port)
-      Thread.new do
-        begin
-          Timeout::timeout(5) {
-            session = server.accept
-            self.new(ip, port, session, :accept)
-          }
-        rescue Timeout::Error
-          false
-        end
+      begin
+        Timeout::timeout(5) {
+          session = server.accept
+          self.new(ip, port, session, :accept)
+        }
+      rescue Timeout::Error
+        false
       end
-      true
     end
 
     def self.send_syn!(ip, port, local_port)
