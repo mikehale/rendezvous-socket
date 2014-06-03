@@ -27,25 +27,7 @@ module Rendezvous
         elapsed = Time.now - start
         puts args.merge(at: :finish, elapsed: elapsed)
         result
-      end
-
-      def punch_nat_nonblock(lport, rhost, rport)
-        log(step: :punch_nat) {
-          #Thread.new do
-            begin
-              socket = CustomSocket.new
-              # set ttl low enough so it crosses our nat but won't reach remote peer.
-              socket.setsockopt(::Socket::IPPROTO_IP, ::Socket::IP_TTL, [2].pack("L"))
-              socket.bind(lport)
-
-              Timeout::timeout(0.3) do
-                socket.connect(rhost,rport)
-              end
-            rescue Timeout::Error, Errno::ECONNREFUSED, Errno::EADDRNOTAVAIL
-              socket.close
-            end
-        #end
-        }
+(abcd[])
       end
 
       # lport=0 causes OS to select a random high port
@@ -59,7 +41,6 @@ module Rendezvous
 
       def peer_socket(lport, lhost, rport, rhost)
         log(step: :connect, lport: lport, rport: rport, rhost: rhost) {
-          #punch_nat_nonblock(lport, rhost, rport)
           AcceptOrConnect.new(lport, lhost, rport, rhost).socket
         }
       end
