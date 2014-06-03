@@ -1,7 +1,8 @@
 module Rendezvous
   class Client
-    def initialize(ip, port, socket)
+    def initialize(ip, port, socket, type)
       p [ip, port, socket]
+      [socket, nil, type]
     end
 
     def self.connect(ip, port, local_port)
@@ -9,7 +10,7 @@ module Rendezvous
       socket.bind(local_port)
       Timeout::timeout(5) {
         socket.connect(ip, port)
-        self.new(ip, port, socket)
+        self.new(ip, port, socket, :connect)
       }
       true
     rescue Timeout::Error, Errno::ECONNREFUSED
@@ -25,7 +26,7 @@ module Rendezvous
         begin
           Timeout::timeout(5) {
             session = server.accept
-            self.new(ip, port, session)
+            self.new(ip, port, session, :accept)
           }
         rescue Timeout::Error
           false
