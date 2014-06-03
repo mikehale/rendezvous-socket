@@ -45,57 +45,57 @@ module Rendezvous
         socket.close
       end
     end
-  end
 
-  def wait_for_accept_or_connect
-    a_thread = Thread.new {
-      # prefer connect over accept
-      if RUBY_PLATFORM =~ /linux/
-        sleep 2
-      end
+    def wait_for_accept_or_connect
+      a_thread = Thread.new {
+        # prefer connect over accept
+        if RUBY_PLATFORM =~ /linux/
+          sleep 2
+        end
 
-      s = new_socket
-      s.listen(5)
-      send_syn!
-      client_socket, addrinfo = s.accept
-      Thread.current["socket"] = client_socket
-      Thread.current["addrinfo"] = addrinfo
-      Thread.current.exit
-    }
-    a_thread.abort_on_exception = true
-
-    c_thread = Thread.new {
-      begin
         s = new_socket
-        sockaddr = ::Socket.sockaddr_in(dest_port, dest_addr)
-        s.connect(sockaddr)
-        Thread.current["socket"] = s
-        Thread.current["addrinfo"] = Addrinfo.new(sockaddr)
-      rescue Errno::ECONNREFUSED
-        sleep CONN_REFUSED_DELAY
-        retry
-      rescue Errno::EADDRINUSE
-        sleep ADDR_IN_USE_DELAY
-        retry
+        s.listen(5)
+        send_syn!
+        client_socket, addrinfo = s.accept
+        Thread.current["socket"] = client_socket
+        Thread.current["addrinfo"] = addrinfo
+        Thread.current.exit
+      }
+      a_thread.abort_on_exception = true
+
+      c_thread = Thread.new {
+        begin
+          s = new_socket
+          sockaddr = ::Socket.sockaddr_in(dest_port, dest_addr)
+          s.connect(sockaddr)
+          Thread.current["socket"] = s
+          Thread.current["addrinfo"] = Addrinfo.new(sockaddr)
+        rescue Errno::ECONNREFUSED
+          sleep CONN_REFUSED_DELAY
+          retry
+        rescue Errno::EADDRINUSE
+          sleep ADDR_IN_USE_DELAY
+          retry
+        end
+        Thread.current.exit
+      }
+      c_thread.abort_on_exception = true
+
+      # wait while both a and c are alive
+      while a_thread.alive? && c_thread.alive?
+        sleep 0.1
       end
-      Thread.current.exit
-    }
-    c_thread.abort_on_exception = true
 
-    # wait while both a and c are alive
-    while a_thread.alive? && c_thread.alive?
-      sleep 0.1
+      if a_thread.status == false
+        # accept succeded
+        Thread.kill(c_thread)
+        [a_thread["socket"], a_thread["addrinfo"], :accept]
+      elsif c_thread.status == false
+        # connect succeded
+        Thread.kill(a_thread)
+        [c_thread["socket"], c_thread["addrinfo"], :connect]
+      end
+
     end
-
-    if a_thread.status == false
-      # accept succeded
-      Thread.kill(c_thread)
-      [a_thread["socket"], a_thread["addrinfo"], :accept]
-    elsif c_thread.status == false
-      # connect succeded
-      Thread.kill(a_thread)
-      [c_thread["socket"], c_thread["addrinfo"], :connect]
-    end
-
   end
 end
