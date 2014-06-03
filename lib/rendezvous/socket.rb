@@ -1,5 +1,7 @@
 require "rendezvous/socket/version"
-require "rendezvous/socket/accept_or_connect"
+# require "rendezvous/socket/accept_or_connect"
+require "rendezvous/socket/custom_socket"
+require "rendezvous/socket/client"
 require "timeout"
 require "excon"
 
@@ -39,7 +41,13 @@ module Rendezvous
 
       def peer_socket(lport, lhost, rport, rhost)
         log(step: :connect, lport: lport, rport: rport, rhost: rhost) {
-          AcceptOrConnect.new(lport, lhost, rport, rhost).socket
+          # AcceptOrConnect.new(lport, lhost, rport, rhost).socket
+          if ENV['CONNECT']
+            Client.connect(rhost, rport, lport)
+          else
+            Client.accept(rhost, rport)
+          end
+
         }
       end
 
