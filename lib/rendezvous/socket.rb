@@ -45,9 +45,8 @@ module Rendezvous
           if ENV['CONNECT']
             Client.connect(rhost, rport, lport)
           else
-            Client.accept(rhost, rport)
+            Client.accept(rhost, rport, lport)
           end
-
         }
       end
 

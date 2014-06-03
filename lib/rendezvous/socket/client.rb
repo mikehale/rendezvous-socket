@@ -7,7 +7,7 @@ module Rendezvous
     def self.connect(ip, port, local_port)
       socket = CustomSocket.new
       socket.bind(local_port)
-      Timeout::timeout(2) {
+      Timeout::timeout(5) {
         socket.connect(ip, port)
         self.new(ip, port, socket)
       }
@@ -16,11 +16,11 @@ module Rendezvous
       false
     end
 
-    def self.accept(ip, port)
+    def self.accept(ip, port, local_port)
       server = CustomSocket.new
-      server.bind
+      server.bind(local_port)
       server.listen(5)
-      send_syn!(ip, port, server.local_port)
+      send_syn!(ip, port, local_port)
       Thread.new do
         begin
           Timeout::timeout(5) {
@@ -28,9 +28,10 @@ module Rendezvous
             self.new(ip, port, session)
           }
         rescue Timeout::Error
+          false
         end
       end
-      server.local_port
+      true
     end
 
     def self.send_syn!(ip, port, local_port)
