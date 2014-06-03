@@ -12,12 +12,12 @@ module Rendezvous
     end
 
     def bind(port = 0)
-      addr_local = Socket.pack_sockaddr_in(port, '0.0.0.0')
+      addr_local = self.pack_sockaddr_in(port, '0.0.0.0')
       super(addr_local)
     end
 
     def connect(ip, port)
-      addr_remote = Socket.pack_sockaddr_in(port, ip)
+      addr_remote = self.pack_sockaddr_in(port, ip)
       super(addr_remote)
     end
 
@@ -26,7 +26,7 @@ module Rendezvous
     end
 
     def addr
-      Socket.unpack_sockaddr_in(getsockname)
+      self.unpack_sockaddr_in(getsockname)
     end
 
     def local_port
