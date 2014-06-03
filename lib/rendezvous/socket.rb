@@ -1,5 +1,4 @@
 require "rendezvous/socket/version"
-require "rendezvous/socket/custom_socket"
 require "rendezvous/socket/accept_or_connect"
 require "timeout"
 require "excon"
