@@ -55,7 +55,7 @@ module Rendezvous
 
         s = new_socket
         s.listen(5)
-        send_syn!
+        #send_syn!
         client_socket, addrinfo = s.accept
         Thread.current["socket"] = client_socket
         Thread.current["addrinfo"] = addrinfo
