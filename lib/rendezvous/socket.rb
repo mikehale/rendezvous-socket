@@ -46,6 +46,10 @@ module Rendezvous
       def open
         peer_socket(*get_peer_endpoint)
       end
+
+      def open_manual(lport, lhost, rport, rhost)
+        peer_socket(lport, lhost, rport, rhost)
+      end
     end
   end
 end

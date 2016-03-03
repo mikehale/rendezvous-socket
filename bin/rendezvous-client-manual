@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+
+lib = File.expand_path('../../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'rendezvous/socket'
+
+$DEBUG = true if ENV['DEBUG']
+
+lport = ARGV[0]
+lhost = ARGV[1]
+rport = ARGV[2]
+rhost = ARGV[3]
+
+s, addrinfo, type = Rendezvous::Socket.new(ENV['RENDEZVOUS_URL']).open_manual(lport, lhost, rport, rhost)
+s.puts Socket.gethostname
+puts s.gets
+s.close
