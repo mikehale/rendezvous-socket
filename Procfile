@@ -1,0 +1,1 @@
+client: bin/rendezvous-client
