@@ -38,7 +38,7 @@ module Rendezvous
       end
 
       def peer_socket(lport, lhost, rport, rhost)
-        log(step: :connect, lport: lport, rport: rport, rhost: rhost) {
+        log(step: :connect, lport: lport, lhost: lhost, rport: rport, rhost: rhost) {
           AcceptOrConnect.new(lport, lhost, rport, rhost).socket
         }
       end
