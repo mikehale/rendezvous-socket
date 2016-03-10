@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+
+lib = File.expand_path('../../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'rendezvous/socket'
+
+$DEBUG = true if ENV['DEBUG']
+
+uri = URI.parse(ENV['RENDEZVOUS_URL'] || "udp://localhost:5000")
+sock = UDPSocket.new
+
+sock.send "hello", 0, uri.host, uri.port
+@peer = nil
+
+loop do
+  msg, _ = sock.recvfrom(65536)
+  case msg
+  when /[\d\.]+:\d/
+    puts "peer addr: #{msg}"
+    @peer = msg.split(":")
+    sock.send "ping", 0, *@peer
+  when "ping"
+    next unless @peer
+    puts "#{Time.now} #{msg}"
+    sock.send "pong", 0, *@peer
+    sleep 0.5
+  when "pong"
+    puts "#{Time.now} #{msg}"
+    sock.send "ping", 0, *@peer
+    sleep 0.5
+  end
+end
