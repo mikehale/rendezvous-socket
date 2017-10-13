@@ -28,8 +28,7 @@ module Rendezvous
         result
       end
 
-      # lport=0 causes OS to select a random high port
-      def get_peer_endpoint(lport=0)
+      def get_peer_endpoint
         log(step: :get_peer_endpoint) {
           response = Excon.get(rendezvous_url, reuseaddr: true, expects: 200, idempotent: true)
           rhost, rport = response.body.split(":")
