@@ -20,11 +20,20 @@ module Rendezvous
     end
 
     def new_socket
-      ::Socket.new(AF_INET, SOCK_STREAM, 0).tap do |s|
+      tcp_socket = ::Socket.new(AF_INET, SOCK_STREAM, 0).tap do |s|
         s.setsockopt(SOL_SOCKET, SO_REUSEADDR, true)
         s.setsockopt(SOL_SOCKET, SO_REUSEPORT, true) if defined?(SO_REUSEPORT)
         s.bind(::Socket.sockaddr_in(bind_port, bind_addr))
       end
+
+      # ssl_context = OpenSSL::SSL::SSLContext.new
+      # ssl_context.ssl_version = :TLSv1
+      # ssl_context.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      # OpenSSL::SSL::SSLSocket.new(tcp_socket, ssl_context).tap do |s|
+      #   s.sync_close = true
+      # end
+
+      tcp_socket
     end
 
     def socket
@@ -54,7 +63,7 @@ module Rendezvous
         end
 
         s = new_socket
-        s.listen(5)
+        # s.listen(5)
         #send_syn!
         client_socket, addrinfo = s.accept
         Thread.current["socket"] = client_socket
