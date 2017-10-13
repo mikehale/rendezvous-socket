@@ -42,8 +42,8 @@ output of it's peer.
 
 ## TODO
 
-* Server managed sessions
 * SSL
+* Server managed sessions
 * Clean interface (as similar to socket interface as possible)
 * Fallback to relay mode
 * Link local connection attempt
