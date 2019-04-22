@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+
+lib = File.expand_path('../../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'rendezvous/socket'
+
+$DEBUG = true if ENV['DEBUG']
+
+socket = Rendezvous::Socket.new(ENV['RENDEZVOUS_URL'])
+lport, _laddr, rport, raddr = socket.get_peer_endpoint
+s, _addrinfo, _type = socket.open
+s.puts Socket.gethostname
+puts s.gets
+
+case ENV.fetch('MODE', 'connect').to_sym
+when :accept
+  exec "nc", "-l", "-p", lport.to_s
+when :connect
+  exec "nc", raddr, rport.to_s
+end

@@ -6,7 +6,14 @@ require 'rendezvous/socket'
 
 $DEBUG = true if ENV['DEBUG']
 
-s, addrinfo, type = Rendezvous::Socket.new(ENV['RENDEZVOUS_URL']).open
-s.puts Socket.gethostname
-puts s.gets
-s.close
+lport, _laddr, rport, raddr = Rendezvous::Socket.new(ENV['RENDEZVOUS_URL']).get_peer_endpoint
+
+
+case ENV.fetch('MODE', 'connect').to_sym
+when :accept
+  # exec "nc", "-l", "-p", lport.to_s
+  exec "/usr/sbin/sshd", "-d", "-p", lport.to_s, "-f", "./sshd/sshd_config"
+when :connect
+  # exec "nc", raddr, rport.to_s
+  exec "ssh", "-t", raddr, "-p", rport.to_s
+end
